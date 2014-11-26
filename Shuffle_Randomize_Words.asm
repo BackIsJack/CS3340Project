@@ -35,10 +35,33 @@ sb 	$t2, testWord($a3)	#store character in t2 into location at t1
 j RandomizeProcess					
 EndRandomizeProcess:
 
-DisplayWord:			#Display's Randomized Word 
-la $a0, testWord
-li $v0, 4
-syscall	
+DisplayWord:			#Display's Randomized Word in three lines
+la $a3, testWord
+li $a2, 0
+
+loop:
+lb $s1, ($a3)
+addi $a2, $a2, 1
+addi $a3, $a3, 1
+
+move $a0, $s1
+li $v0, 11 
+syscall
+
+beq $a2, 3, newLine
+beq $a2, 6, newLine
+beq $a2, 9, endLoop
+j loop
+
+endLoop:
+li $v0, 10
+syscall
+
+newLine:
+li $v0, 11
+li $a0, 10
+syscall
+j loop	
 
 ReturntoCaller:			#clean up the stack
 lw	$ra, ($sp)		#restore return address
