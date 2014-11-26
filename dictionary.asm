@@ -42,11 +42,15 @@ initDict:
 initDictLoop:
 	lb $t0, ($a0) #loads byte from dictionary
 	beq $t0, 0, initDictLoopExit #exits loop at null 
+	bne $t0,10, fillSkipped
 	sb $zero, ($a0)		#change newline to null
 	add $a0, $a0, 1		#increments scanner
 	sw $a0, ($a1)		#store scanner in dict
 	add $a1, $a1, 4		#advances pointer
 	add $v1, $v1, 1		#add 1 to the number of words.
+	j initDictLoop
+fillSkipped:
+	add $a0,$a0,1	#increments scanner
 	j initDictLoop
 initDictLoopExit:
 	sw $v1, dictLength 
