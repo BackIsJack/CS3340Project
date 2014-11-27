@@ -1,4 +1,5 @@
 .data
+.align 2
 askinput: .asciiz "Input: "
 askboard: .asciiz "Board: "
 notLong: .asciiz "Your word is not 4 letters or longer\n"
@@ -12,7 +13,7 @@ board: .space 16
 
 .text
 
-main:
+#main:
 	li	$v0, 4
 	la	$a0, askinput
 	syscall
@@ -39,7 +40,7 @@ main:
 	jal	checkChars
 
 
-exit:
+#exit:
 	li	$v0, 10
 	syscall
 
