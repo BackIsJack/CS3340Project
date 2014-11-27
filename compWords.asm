@@ -9,7 +9,7 @@ word2: .space 32
 
 .text
 
-main:
+#main:
 	li	$v0, 4
 	la	$a0, ask1
 	syscall
@@ -49,7 +49,7 @@ cwLoop:
 	lb	$t2, ($t0)
 	lb	$t3, ($t1)
 	bne	$t2, $t3, wbadC
-	beq	$t2, 0xa, end_cwLoop
+	beq	$t2, 0xd, end_cwLoop
 	add	$t0, $t0, 1
 	add	$t1, $t1, 1
 	j	cwLoop

@@ -7,7 +7,7 @@ Shuffle:
 addi	$sp, $sp, -4			#Make room on the stack
 sw	$ra, ($sp)			#Store the return addess on the stack	
 add	$t0, $zero, $zero		#Counter
-la	$s2, testWord	
+la	$s2, wordArray	
 
 RandomizeProcess:
 
@@ -27,16 +27,16 @@ j RandomizeProcess
 Swap:
 beq $t0, $a3, RandomizeProcess		#If the random number generated is equal the counter,  repeat randomize process
 					#If not equal, then swap the the letter that $t0 index points too in the 9 letter word array with the letter that the value in $a3 points to in the array					
-lb 	$t2, testWord($t0)	#load the letter at t0 into t2
-lb 	$t3, testWord($a3)	#load character at t1 into t3
-sb 	$t3, testWord($t0)	#store character in t3 into location at t0
-sb 	$t2, testWord($a3)	#store character in t2 into location at t1
+lb 	$t2, wordArray($t0)	#load the letter at t0 into t2
+lb 	$t3, wordArray($a3)	#load character at t1 into t3
+sb 	$t3, wordArray($t0)	#store character in t3 into location at t0
+sb 	$t2, wordArray($a3)	#store character in t2 into location at t1
 
 j RandomizeProcess					
 EndRandomizeProcess:
 
 DisplayWord:			#Display's Randomized Word in three lines
-la $a3, testWord
+la $a3, wordArray
 li $a2, 0
 
 loop:
@@ -50,7 +50,7 @@ syscall
 
 beq $a2, 3, newLine
 beq $a2, 6, newLine
-beq $a2, 9, endLoop
+beq $a2, 9, ReturntoCaller
 j loop
 
 endLoop:

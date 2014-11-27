@@ -1,10 +1,51 @@
 # dictionary of words are stored in files named as the first letter of each word.
 .data
-dictBuffer: .space 50000 #creates a buffer to store words
-dict: .space 50000 #allocates space for dict array
+.align 2
+dictBuffer: .space 700000 #creates a buffer to store words
+dict: .space 700000 #allocates space for dict array
 dictLength: .space 8
 fileName: .space 32
+printWord: .space 64
+boardWord: .space 8#address of word
+endAddr: .space 8#addres of next astric
 .text
+#mainish:
+#jal	getNameFile
+#jal	importWords
+#li	$s3, 0
+#jal	initDict
+#jal	pickWord
+#add	$s3, $a0, $0
+#jal 	getWord
+
+#li	$v0, 4
+#la	$t0, boardWord
+#lw	$t1, ($t0)
+#lw	$t2, ($t1)
+#add	$a0, $t2, $0
+#syscall
+#li	$v0, 11
+#li	$a0, 0x0a
+#syscall
+#li	$v0, 4
+#add	$t1, $t1, 4
+#lw	$t2, ($t1)
+#add	$a0, $t2, $0
+#syscall
+#jal	printDict
+#la	$t3, boardWord
+#lw	$t4, ($t3)
+#lw	$t5, ($t4)
+#lb	$t6, ($t5)
+#li	$v0, 11
+#add	$a0, $t6, $0
+#syscall
+
+#jal	findEnd
+
+#li	$v0, 10
+#syscall
+
 getNameFile:
 	li $v0, 41 #syscall for random number
 	syscall		
@@ -24,8 +65,10 @@ importWords:
 	li $a2,0 #sets max characters to read to 0
 	syscall
 	move $s0, $v0 #save file location
+	move $a0, $v0
 	li $v0, 14 # syscall for read from file
 	la $a1, dictBuffer #address of buffer
+	li $a2, 700000
 	syscall
 	li $v0,16 # Syscall for closing the file
 	move $a0,$s0
@@ -42,6 +85,9 @@ initDict:
 initDictLoop:
 	lb $t0, ($a0) #loads byte from dictionary
 	beq $t0, 0, initDictLoopExit #exits loop at null 
+	bne $t0, 0x2a, noWord
+	add $s3, $s3, 1
+noWord:
 	bne $t0,10, fillSkipped
 	sb $zero, ($a0)		#change newline to null
 	add $a0, $a0, 1		#increments scanner
@@ -55,3 +101,81 @@ fillSkipped:
 initDictLoopExit:
 	sw $v1, dictLength 
 	jr $ra
+	
+pickWord:
+	li	$a0, 0
+	add	$a1, $s3, -1
+	li	$v0, 42
+	syscall
+	jr	$ra
+	
+getWord:
+	la	$t0, dict
+	la	$t2, dictLength
+	lw	$t2, ($t2)
+	li	$t5, 0
+	li	$t6, 0
+getWordLoop:
+	beq	$t5, $t2, endGetWordLoop
+	lw	$t3, ($t0)
+	lb	$t4, ($t3)
+	bne	$t4, 0x2a, notAst
+	add	$t6, $t6, 1
+	beq	$t6, $s3, endGetWordLoop
+notAst:
+	add	$t0, $t0, 4
+	add	$t5, $t5, 1
+	j	getWordLoop
+endGetWordLoop:	
+	add	$t0, $t0, 4
+	la	$t1, boardWord
+	sw	$t0, ($t1)
+	jr	$ra
+	
+findEnd:
+	la	$t0, boardWord
+	lw	$t0, ($t0)
+	add	$t0, $t0, 4
+findEndLoop:
+	lw	$t2, ($t0)
+	lb	$t1, ($t2)
+	beq	$t1, 0x2a, endFindEndLoop
+	add	$t0, $t0, 4
+	j	findEndLoop
+endFindEndLoop:
+	la	$t1, endAddr
+	sw	$t0, ($t1)
+	jr	$ra
+	
+printDict:
+	la	$t0, dict
+	la	$t2, dictLength
+	lw	$t2, ($t2)
+	li	$t5, 0
+printLoop:
+	beq	$t5, $t2, endPrintLoop
+	la	$t1, printWord
+	sw	$0, ($t1)
+	add	$t1, $t1, 4
+	sw	$0, ($t1)
+	add	$t1, $t1, -4
+	lw	$t3, ($t0)
+	wordLoop:
+		lb	$t4, ($t3)
+		beq	$t4, 0x00, endWordLoop
+		sb	$t4, ($t1)
+		add	$t3, $t3, 1
+		add	$t1, $t1, 1
+		j	wordLoop
+	endWordLoop:
+	li	$v0, 4
+	la	$a0, printWord
+	syscall
+	li	$v0, 11
+	li	$a0, 0x0a
+	syscall
+	add	$t0, $t0, 4
+	add	$t5, $t5, 1
+	j	printLoop
+endPrintLoop:		
+	jr	$ra
