@@ -39,6 +39,16 @@ DisplayWord:			#Display's Randomized Word in three lines
 la $a3, wordArray
 li $a2, 0
 
+jal	lineDivider
+
+li $v0, 11
+li $a0, 0x7c
+syscall
+li $v0, 11
+li $a0, 0x20
+syscall
+
+
 loop:
 lb $s1, ($a3)
 addi $a2, $a2, 1
@@ -47,6 +57,17 @@ addi $a3, $a3, 1
 move $a0, $s1
 li $v0, 11 
 syscall
+
+li $v0, 11
+li $a0, 0x20
+syscall
+li $v0, 11
+li $a0, 0x7c
+syscall
+li $v0, 11
+li $a0, 0x20
+syscall
+
 
 beq $a2, 3, newLine
 beq $a2, 6, newLine
@@ -61,14 +82,80 @@ newLine:
 li $v0, 11
 li $a0, 10
 syscall
+addi	$sp, $sp, -4
+sw	$ra, ($sp)
+jal lineDivider
+lw	$ra, ($sp)
+addi	$sp, $sp, 4
+
+li $v0, 11
+li $a0, 0x7c
+syscall
+
+li $v0, 11
+li $a0, 0x20
+syscall
+
+
 j loop	
 
-ReturntoCaller:			#clean up the stack
+ReturntoCaller:	
+li	$v0, 11
+li	$a0, 0x0a
+syscall
+jal	lineDivider		#clean up the stack
 lw	$ra, ($sp)		#restore return address
 addi	$sp, $sp, 4	
 jr	$ra
 
+disBoard:
+addi	$sp, $sp, -4			#Make room on the stack
+sw	$ra, ($sp)			#Store the return addess on the stack	
+add	$t0, $zero, $zero		#Counter
+la	$s2, wordArray	
+j	DisplayWord
 
+lineDivider:
+li $v0, 11
+li $a0, 0x20
+syscall
+li $v0, 11
+li $a0, 0x2d
+syscall
+li $v0, 11
+li $a0, 0x2d
+syscall
+li $v0, 11
+li $a0, 0x2d
+syscall
+li $v0, 11
+li $a0, 0x2d
+syscall
+li $v0, 11
+li $a0, 0x2d
+syscall
+li $v0, 11
+li $a0, 0x2d
+syscall
+li $v0, 11
+li $a0, 0x2d
+syscall
+li $v0, 11
+li $a0, 0x2d
+syscall
+li $v0, 11
+li $a0, 0x2d
+syscall
+li $v0, 11
+li $a0, 0x2d
+syscall
+li $v0, 11
+li $a0, 0x2d
+syscall
+li $v0, 11
+li $a0, 0x0a
+syscall
+jr	$ra
 
 
 

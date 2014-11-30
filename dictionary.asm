@@ -9,42 +9,6 @@ printWord: .space 64
 boardWord: .space 8#address of word
 endAddr: .space 8#addres of next astric
 .text
-#mainish:
-#jal	getNameFile
-#jal	importWords
-#li	$s3, 0
-#jal	initDict
-#jal	pickWord
-#add	$s3, $a0, $0
-#jal 	getWord
-
-#li	$v0, 4
-#la	$t0, boardWord
-#lw	$t1, ($t0)
-#lw	$t2, ($t1)
-#add	$a0, $t2, $0
-#syscall
-#li	$v0, 11
-#li	$a0, 0x0a
-#syscall
-#li	$v0, 4
-#add	$t1, $t1, 4
-#lw	$t2, ($t1)
-#add	$a0, $t2, $0
-#syscall
-#jal	printDict
-#la	$t3, boardWord
-#lw	$t4, ($t3)
-#lw	$t5, ($t4)
-#lb	$t6, ($t5)
-#li	$v0, 11
-#add	$a0, $t6, $0
-#syscall
-
-#jal	findEnd
-
-#li	$v0, 10
-#syscall
 
 getNameFile:
 	li $v0, 41 #syscall for random number

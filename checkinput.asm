@@ -13,39 +13,6 @@ board: .space 16
 
 .text
 
-#main:
-	li	$v0, 4
-	la	$a0, askinput
-	syscall
-	li	$v0, 8
-	la	$a0, input
-	li	$a1, 16
-	syscall	
-	li	$v0, 4
-	la	$a0, askboard
-	syscall
-	li	$v0, 8
-	la	$a0, board
-	li	$a1, 64
-	syscall
-	
-	la	$a0, input
-	la	$a1, board
-	jal	checkLength
-	la	$a0, input
-	la	$a1, board
-	jal	checkMiddleLetter
-	la	$a0, input
-	la	$a1, board
-	jal	checkChars
-
-
-#exit:
-	li	$v0, 10
-	syscall
-
-
-
 #check length
 checkLength:
 #returns 1 if 4 letters or longer 0 otherwise
@@ -59,9 +26,6 @@ numLoop:
 	j	numLoop
 end_numLoop:
 	bgt	$t2, 3, goodL 
-	la	$a0, notLong
-	li	$v0, 4
-	syscall
 	li	$v0, 0
 	jr	$ra
 goodL:
@@ -82,9 +46,6 @@ mLoop:
 	addi	$t0, $t0, 1
 	j	mLoop
 end_mLoop:
-	la	$a0, notMiddle
-	li	$v0, 4
-	syscall
 	li	$v0, 0
 	jr	$ra
 goodM:
@@ -116,9 +77,6 @@ ocLoop:
 end_ocLoop:	
 	j	goodC
 badC:
-	li	$v0, 4
-	la	$a0, notInWord
-	syscall
 	li	$v0, 0
 	jr	$ra		
 goodC:

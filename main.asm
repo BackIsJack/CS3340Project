@@ -6,6 +6,7 @@ notInDict: .asciiz "You word is not a real word"
 invalid: .asciiz "Your word is invalid"
 .align 2 
 valid: .asciiz "Your word is valid"
+
 .text
 
 
@@ -14,6 +15,7 @@ valid: .asciiz "Your word is valid"
 .include "Shuffle_Randomize_Words.asm"
 .include "checkinput.asm"
 .include "compWords.asm"
+.include "Timer.asm"
 
 main:
 jal	getNameFile
@@ -24,15 +26,9 @@ jal	pickWord
 add	$s3, $a0, $0
 jal 	getWord
 
-li	$v0, 4
 la	$t0, boardWord
 lw	$t1, ($t0)
 lw	$t2, ($t1)
-add	$a0, $t2, $0
-syscall
-li	$v0, 11
-li	$a0, 0x0a
-syscall
 
 la	$t3, wordArray
 l:
@@ -47,10 +43,9 @@ jal	findEnd
 
 
 jal	Shuffle
+jal	time#################################################
+jal	compareTime
 mainLoop:
-li	$v0, 11
-li	$a0, 0x0a
-syscall
 
 li	$v0, 4
 la	$a0, askinput
@@ -98,20 +93,26 @@ beq	$v0, 1, goodCLM
 add	$s1, $s1, 4
 j	compLoop
 endCompLoop:
-li	$v0, 4
-la	$a0, notInDict
-syscall
 j	iV
 goodCLM:
 li	$v0, 4
 la	$a0, valid
 syscall
+
+jal	wordCorrect
+jal	compareTime
+jal	disBoard
 j	mainLoop
 
 iV:
+jal	compareTime
 li	$v0, 4
 la	$a0, invalid
 syscall
+li	$v0, 11
+la	$a0, 0x0a
+syscall
+jal	disBoard
 j	mainLoop	
 
 

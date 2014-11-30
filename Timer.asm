@@ -1,16 +1,20 @@
 .data 
-TimesUp: .asciiz "Time's up!" 
+TimesUp: .asciiz "Time's up!"
+.align 2
+scoreIs: .asciiz "Your score is: "
+.align 2
+timeLeft: .asciiz "Time left: "
 
 .text
-main:
+#main:
 
-jal time
+#jal time
 
-li $v0, 5
-syscall
+#li $v0, 5
+#syscall
 
-jal compareTime
-jal displayTime
+#jal compareTime
+#jal displayTime
 
 
 return:
@@ -19,38 +23,62 @@ syscall
 
 #Get initial time
 time:
+li $s6, 60
 li $v0, 30		#Put lower 32 bits in $a0
 syscall
-move $s1, $a0		#Make a copy of the value in $a0 and store in $s1
+move $s4, $a0		#Make a copy of the value in $a0 and store in $s4
 
 jr $ra
 
 #Get current time
 compareTime:
-li $t0, 60		#holds "60" seconds
 li $v0, 30		#Put lower 32 bits in $a0
 syscall
-move $s2, $a0		#Make a copy of the value in $a0 and store in $s2
+move $s5, $a0		#Make a copy of the value in $a0 and store in $s5
+li $v0, 1
 
 #Find difference between the times
-sub $s2, $s2, $s1
-div $s2, $s2, 1000
-bgt $s2, $t0, EndGame
+sub $s5, $s5, $s4
+div $s5, $s5, 1000
+bgt $s5, $s6, EndGame
+sub $t0, $s6, $s5
+li $v0, 11
+li $a0, 0x0a
+syscall
+li $v0, 4
+la $a0, timeLeft
+syscall
+li $v0, 1
+add $a0, $0, $t0
+syscall
+li $v0, 11
+li $a0, 0x0a
+syscall
 jr $ra
 
 EndGame:		#After 60 seconds, game timer ends
 la $a0, TimesUp
 li $v0,4
 syscall
+li $v0, 11
+li $a0, 0x0a
+syscall
+la $a0, scoreIs
+li $v0, 4
+syscall
+add $a0, $s7, $0
+li $v0, 1
+syscall
 
 j return
 
 displayTime:		
-move $a0, $s2
+move $a0, $s5
 li $v0,1
 syscall
 jr $ra
 
 wordCorrect:			#Adds 20 seconds to the clock when a valid word is entered
-add $t0, $t0, 20
+add $s6, $s6, 20
+add $s7, $s7, 10
 jr $ra
