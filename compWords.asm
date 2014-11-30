@@ -9,34 +9,6 @@ word2: .space 32
 
 .text
 
-#main:
-	li	$v0, 4
-	la	$a0, ask1
-	syscall
-	li	$v0, 8
-	la	$a0, word1
-	li	$a1, 32
-	syscall	
-	li	$v0, 4
-	la	$a0, ask2
-	syscall
-	li	$v0, 8
-	la	$a0, word2
-	li	$a1, 32
-	syscall
-	
-	la	$a0, word1
-	la	$a1, word2
-	jal	compareWords
-	
-	add	$a0, $v0, $0
-	li	$v0, 1
-	syscall
-
-
-	li	$v0, 10
-	syscall
-
 compareWords:
 #currently case sensitive
 #$a0 word 1
