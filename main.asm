@@ -6,6 +6,8 @@ notInDict: .asciiz "You word is not a real word"
 invalid: .asciiz "Your word is invalid"
 .align 2 
 valid: .asciiz "Your word is valid"
+.align 2
+shuffle: .asciiz "1\n"
 
 .text
 
@@ -55,6 +57,26 @@ li	$v0, 8
 la	$a0, input
 li	$a1, 16
 syscall	
+
+la	$t0, input
+lw	$t0, ($t0)
+la	$t1, shuffle
+lw	$t1, ($t1)
+beq	$t0, $t1, Shuffle
+
+la	$t0, input
+capsLoop:
+lb	$t1, ($t0)
+beq	$t1, 0x0a, endCapsLoop
+li	$t2, 0x60
+bgt	$t2, $t1, isCaps
+	add	$t1, $t1, -32
+	sb	$t1, ($t0)
+isCaps:
+add	$t0, $t0, 1
+j	capsLoop
+endCapsLoop:
+
 
 la	$a0, input
 la	$a1, wordArray

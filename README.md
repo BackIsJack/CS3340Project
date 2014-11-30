@@ -12,7 +12,7 @@ Features
 
  Timer - There is a timer that extends when a word is found and will stop the game when it runs out.
 
- Scramble - The user can scramble the words while keeping the middle letter the same.
+ Scramble - The user can scramble the words while keeping the middle letter the same by inputting a 1.
 
  Input - The user can guess words by typing in words and pressing enter, the program will check and then tell the user whether their word was correct or incorrect.
 
