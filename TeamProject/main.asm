@@ -8,6 +8,10 @@ invalid: .asciiz "Your word is invalid"
 valid: .asciiz "Your word is valid"
 .align 2
 check: .asciiz "1\n"
+.align 2
+usedWords: .space 400
+.align 2
+i: .space 8
 
 .text
 
@@ -124,6 +128,26 @@ j	compLoop
 endCompLoop:
 j	iV
 goodCLM:
+
+la $t0, usedWords
+la $t1, i
+lw $t1, ($t1)
+li $t2, 0
+add $s1, $s1, -4
+usedWordsLoop:
+beq $t2, $t1, endUsedWordsLoop
+lw $t3, ($t0)
+beq $t3, $s1, iV
+add $t2, $t2, 1
+add $t0, $t0, 4
+j usedWordsLoop
+endUsedWordsLoop: 
+add $t1, $t1, 1
+la $t3, i
+sw $t1, ($t3)
+sw $s1, ($t0)
+
+
 li	$v0, 4
 la	$a0, valid
 syscall
